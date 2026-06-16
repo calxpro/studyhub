@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Hub - Organize Your Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-box {
+            background: linear-gradient(to bottom right, #6366f1, #a855f7);
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-box svg {
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #1f2937;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #6366f1, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Statistics */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        /* Form */
+        .form-container {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .form-container.show {
+            display: block;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .form-header h2 {
+            font-size: 20px;
+            color: #1f2937;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            ring: 2px;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        textarea {
+            resize: none;
+            min-height: 100px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Tasks List */
+        .tasks-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .task-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 16px;
+            transition: all 0.2s;
+        }
+
+        .task-item:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+        }
+
+        .task-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .task-description {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        .task-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 0;
+        }
+
+        .tag {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .tag-homework {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .tag-activities {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .tag-materials {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .tag-high {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .tag-medium {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+
+        .tag-low {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .tag-date {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 18px;
+        }
+
+        .btn-edit {
+            color: #3b82f6;
+        }
+
+        .btn-edit:hover {
+            background: #dbeafe;
+        }
+
+        .btn-delete {
+            color: #ef4444;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .task-item {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">
+                <div class="icon-box">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17s4.5 10.747 10 10.747c5.5 0 10-4.998 10-10.747S17.5 6.253 12 6.253z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Study Hub</h1>
+                    <p class="subtitle">Organize your learning journey</p>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="toggleForm()">
+                <span>+</span>
+                Add Item
+            </button>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Items</div>
+                <div class="stat-value" id="stat-total">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Completed</div>
+                <div class="stat-value" id="stat-completed">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Homework</div>
+                <div class="stat-value" id="stat-homework">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Activities</div>
+                <div class="stat-value" id="stat-activities">0</div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-container" id="formContainer">
+            <div class="form-header">
+                <h2 id="formTitle">Add New Item</h2>
+                <button class="close-btn" onclick="toggleForm()">✕</button>
+            </div>
+            <form onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="inputTitle" placeholder="e.g., Math Assignment 5" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="inputDescription" placeholder="Add details..."></textarea>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="inputCategory">
+                            <option value="homework">Homework</option>
+                            <option value="activities">Activities</option>
+                            <option value="materials">Study Materials</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="inputPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Due Date</label>
+                        <input type="date" id="inputDueDate">
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" class="btn-secondary" onclick="toggleForm()">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Item</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tasks List -->
+        <div id="tasksList"></div>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        let editingId = null;
+
+        function toggleForm() {
+            const form = document.getElementById('formContainer');
+            form.classList.toggle('show');
+            if (form.classList.contains('show')) {
+                document.getElementById('inputTitle').focus();
+                document.getElementById('formTitle').textContent = 'Add New Item';
+                document.getElementById('inputTitle').value = '';
+                document.getElementById('inputDescription').value = '';
+                document.getElementById('inputCategory').value = 'homework';
+                document.getElementById('inputPriority').value = 'medium';
+                document.getElementById('inputDueDate').value = '';
+                editingId = null;
+            }
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            const task = {
+                id: editingId || Date.now(),
+                title: document.getElementById('inputTitle').value,
+                description: document.getElementById('inputDescription').value,
+                category: document.getElementById('inputCategory').value,
+                priority: document.getElementById('inputPriority').value,
+                dueDate: document.getElementById('inputDueDate').value,
+                completed: editingId ? tasks.find(t => t.id === editingId).completed : false
+            };
+
+            if (editingId) {
+                tasks = tasks.map(t => t.id === editingId ? task : t);
+                editingId = null;
+            } else {
+                tasks.push(task);
+            }
+
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+            toggleForm();
+            updateStats();
+        }
+
+        function deleteTask(id) {
+            if (confirm('Are you sure?')) {
+                tasks = tasks.filter(t => t.id !== id);
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                renderTasks();
+                updateStats();
+            }
+        }
+
+        function editTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                document.getElementById('inputTitle').value = task.title;
+                document.getElementById('inputDescription').value = task.description;
+                document.getElementById('inputCategory').value = task.category;
+                document.getElementById('inputPriority').value = task.priority;
+                document.getElementById('inputDueDate').value = task.dueDate;
+                document.getElementById('formTitle').textContent = 'Edit Item';
+                editingId = id;
+                document.getElementById('formContainer').classList.add('show');
+                document.getElementById('inputTitle').focus();
+            }
+        }
+
+        function toggleComplete(id) {
+            tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+            updateStats();
+        }
+
+        function getCategoryColor(category) {
+            const colors = {
+                homework: 'tag-homework',
+                activities: 'tag-activities',
+                materials: 'tag-materials'
+            };
+            return colors[category] || 'tag-homework';
+        }
+
+        function getPriorityColor(priority) {
+            const colors = {
+                high: 'tag-high',
+                medium: 'tag-medium',
+                low: 'tag-low'
+            };
+            return colors[priority] || 'tag-medium';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString + 'T00:00:00');
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('tasksList');
+            
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">✓</div>
+                        <div class="empty-title">All Caught Up!</div>
+                        <div class="empty-text">No items yet. Add one to get started.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="tasks-header">Your Items (${tasks.length})</div>
+                ${tasks.map(task => `
+                    <div class="task-item ${task.completed ? 'completed' : ''}">
+                        <input 
+                            type="checkbox" 
+                            class="task-checkbox" 
+                            ${task.completed ? 'checked' : ''} 
+                            onchange="toggleComplete(${task.id})"
+                        >
+                        <div class="task-content">
+                            <div class="task-title">${task.title}</div>
+                            ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                            <div class="task-tags">
+                                <span class="tag ${getCategoryColor(task.category)}">${task.category.charAt(0).toUpperCase() + task.category.slice(1)}</span>
+                                <span class="tag ${getPriorityColor(task.priority)}">${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</span>
+                                ${task.dueDate ? `<span class="tag tag-date">📅 ${formatDate(task.dueDate)}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn-icon btn-edit" onclick="editTask(${task.id})" title="Edit">✎</button>
+                            <button class="btn-icon btn-delete" onclick="deleteTask(${task.id})" title="Delete">🗑</button>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').textContent = tasks.length;
+            document.getElementById('stat-completed').textContent = tasks.filter(t => t.completed).length;
+            document.getElementById('stat-homework').textContent = tasks.filter(t => t.category === 'homework').length;
+            document.getElementById('stat-activities').textContent = tasks.filter(t => t.category === 'activities').length;
+        }
+
+        renderTasks();
+        updateStats();
+    </script>
+</body>
+</html>
